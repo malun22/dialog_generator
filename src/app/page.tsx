@@ -1,37 +1,49 @@
 "use client";
 
-import { cn } from "@/utils/styles";
-import Image from "next/image";
-import { useState } from "react";
-
-const MIN_WIDTH = 308;
+import Dialog from "./_components/dialog";
+import { ModeToggle } from "./_components/theme-toggle";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "./_components/ui/card";
+import { Separator } from "./_components/ui/separator";
 
 export default function Home() {
-  const [maxWidth, setMaxWidth] = useState(MIN_WIDTH);
-  const [maxHeight, setMaxHeight] = useState(0);
-
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center text-white">
-      <div
-        className={
-          "border-dark h-fit overflow-hidden rounded-lg border text-sm font-light"
-        }
-        style={{ width: `${maxWidth}px`, minWidth: `${MIN_WIDTH}px` }}
-      >
-        <div className="bg-navbar flex h-[31px] w-full items-center justify-between px-2">
-          <div className="flex w-fit flex-row items-center justify-start gap-[10px]">
-            <div className="relative h-[13px] w-[13px]">
-              <Image
-                alt="dialogIcon"
-                src={"/dialogIcon.jpg"}
-                sizes="100%"
-                fill
-                priority
-              />
-            </div>
-            <span>Dialog</span>
+    <main className="min-h-screen">
+      <div className="hidden h-full w-full flex-col md:flex">
+        <div className="container flex flex-col items-start justify-between space-y-2 py-4 sm:flex-row sm:items-center sm:space-y-0 md:h-16">
+          <h2 className="text-lg font-semibold">Playground</h2>
+          <div className="ml-auto flex w-full space-x-2 sm:justify-end">
+            <ModeToggle />
           </div>
-          <button className="hover:bg-navbar-hover">&#10006;</button>
+        </div>
+        <Separator className="" />
+        <div className="flex w-full flex-row gap-2 p-2">
+          <Card className="container h-full max-w-xs">
+            <CardHeader>
+              <CardTitle>Toolbox</CardTitle>
+              <CardDescription>All the available bricks.</CardDescription>
+            </CardHeader>
+          </Card>
+          <Card className="container h-full flex-grow">
+            <CardHeader>
+              <CardTitle>Dialog</CardTitle>
+              <CardDescription>Build your dialog.</CardDescription>
+            </CardHeader>
+            <CardContent className="flex justify-center">
+              <Dialog />
+            </CardContent>
+          </Card>
+          <Card className="container h-full max-w-xs">
+            <CardHeader>
+              <CardTitle>Settings</CardTitle>
+              <CardDescription>Change attributes.</CardDescription>{" "}
+            </CardHeader>
+          </Card>
         </div>
       </div>
     </main>
