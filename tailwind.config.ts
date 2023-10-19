@@ -21,6 +21,7 @@ export default {
         "navbar-hover": "#daecf0",
         "navbar-unactive": "#cdd9e1",
         dark: "#454647",
+        "button-hover": "#daecf0",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
