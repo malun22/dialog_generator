@@ -5,6 +5,8 @@ import { headers } from "next/headers";
 
 import { TRPCReactProvider } from "@/trpc/react";
 import { cn } from "@/utils/styles";
+import { ThemeProvider } from "./_components/theme-provider";
+import Navbar from "./_components/navbar";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -30,7 +32,16 @@ export default function RootLayout({
           inter.variable,
         )}
       >
-        <TRPCReactProvider headers={headers()}>{children}</TRPCReactProvider>
+        <TRPCReactProvider headers={headers()}>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+          </ThemeProvider>
+        </TRPCReactProvider>
       </body>
     </html>
   );
