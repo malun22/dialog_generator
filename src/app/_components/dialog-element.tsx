@@ -5,7 +5,7 @@ export type DialogElementProps = {
   y: number;
 };
 
-const DialogElement = (props: DialogElementProps) => {
+const DialogElement = () => {
   return (
     <div className="relative flex h-full w-full items-center overflow-visible">
       <p className="absolute">Text</p>

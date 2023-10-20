@@ -6,7 +6,7 @@ import {
   useDroppable,
 } from "@dnd-kit/core";
 import { useDialogState } from "../hooks/dialog-state";
-import DialogElement, { DialogElementProps } from "./dialog-element";
+import DialogElement, { type DialogElementProps } from "./dialog-element";
 import { useMemo, useState } from "react";
 import { cn } from "@/utils";
 
@@ -42,19 +42,18 @@ const DialogBody = () => {
   }, [dialogState.elements]);
 
   useDndMonitor({
-    onDragStart(event) {
+    onDragStart() {
       setIsDragging(true);
     },
-    onDragMove(event) {},
     onDragOver(event) {
       // Tell column, that elemt is above
       setIsOverId(event.over?.id ?? null);
     },
-    onDragEnd(event) {
+    onDragEnd() {
       setIsDragging(false);
       setIsOverId(null);
     },
-    onDragCancel(event) {
+    onDragCancel() {
       setIsDragging(false);
       setIsOverId(null);
     },
@@ -98,7 +97,7 @@ type ColumnProps = {
   id: string;
 };
 
-const Column = ({ rowIndex, colIndex, element, isOver, id }: ColumnProps) => {
+const Column = ({ colIndex, element, isOver, id }: ColumnProps) => {
   const { setNodeRef } = useDroppable({
     id,
   });
@@ -112,8 +111,8 @@ const Column = ({ rowIndex, colIndex, element, isOver, id }: ColumnProps) => {
       key={colIndex}
       style={{ width: 6.85 }}
     >
-      {element.map((element, index) => {
-        return <DialogElement key={index} x={element.x} y={element.y} />;
+      {element.map(() => {
+        return <DialogElement key={id} />;
       })}
     </div>
   );

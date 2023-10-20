@@ -1,6 +1,6 @@
 "use client";
 
-import { DndContext, DragEndEvent, pointerWithin } from "@dnd-kit/core";
+import { DndContext, type DragEndEvent, pointerWithin } from "@dnd-kit/core";
 import DefaultButtonsCheckbox from "./_components/default-buttons-checkbox";
 import Dialog from "./_components/dialog";
 import { ModeToggle } from "./_components/theme-toggle";

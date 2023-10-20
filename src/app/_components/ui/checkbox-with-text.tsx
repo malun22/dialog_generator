@@ -2,7 +2,7 @@
 
 import { Checkbox } from "@/app/_components/ui/checkbox";
 import * as React from "react";
-import * as CheckboxPrimitive from "@radix-ui/react-checkbox";
+import type * as CheckboxPrimitive from "@radix-ui/react-checkbox";
 
 type CheckboxWithTextProps = {
   id: string;
@@ -25,10 +25,12 @@ const CheckboxWithText = React.forwardRef<
         {label}
       </label>
       {description && (
-        <p className="text-muted-foreground text-sm">{description}</p>
+        <p className="text-sm text-muted-foreground">{description}</p>
       )}
     </div>
   </div>
 ));
+
+CheckboxWithText.displayName = "CheckboxWithText";
 
 export { CheckboxWithText };

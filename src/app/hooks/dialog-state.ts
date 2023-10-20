@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { DialogElementProps } from "../_components/dialog-element";
+import type { DialogElementProps } from "../_components/dialog-element";
 
 type DialogState = {
   name: string;
