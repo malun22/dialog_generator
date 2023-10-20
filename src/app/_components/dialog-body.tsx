@@ -65,7 +65,7 @@ const DialogBody = () => {
         return (
           <div
             className={cn("flex h-6 flex-row justify-start gap-0", {
-              "bg-[#d6d6d6]": isDragging,
+              "border border-dashed border-primary bg-[#d6d6d6]": isDragging,
             })}
             key={rowIndex}
           >
