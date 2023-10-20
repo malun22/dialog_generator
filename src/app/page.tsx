@@ -29,7 +29,7 @@ export default function Home() {
     <main className="min-h-screen">
       <div className="h-full w-full flex-col md:flex">
         <div className="container flex flex-col items-start justify-between space-y-2 py-4 sm:flex-row sm:items-center sm:space-y-0 md:h-16">
-          <h2 className="text-lg font-semibold">Playground</h2>
+          <h2 className="w-fit text-lg font-semibold">Dialog Builder</h2>
           <div className="ml-auto flex w-full space-x-2 sm:justify-end">
             <ModeToggle />
           </div>
@@ -58,18 +58,29 @@ export default function Home() {
                 <Dialog />
               </CardContent>
             </Card>
-            <Card className="container h-full max-w-xs">
-              <CardHeader>
-                <CardTitle>Settings</CardTitle>
-                <CardDescription>Change attributes.</CardDescription>{" "}
-              </CardHeader>
-              <CardContent>
-                <div className="flex flex-col gap-4">
-                  <DialogName />
-                  <DefaultButtonsCheckbox />
-                </div>
-              </CardContent>
-            </Card>
+            <div className="flex h-full w-full max-w-xs flex-col gap-4">
+              <Card className="w-full">
+                <CardHeader>
+                  <CardTitle>Block Settings</CardTitle>
+                  <CardDescription>Change attributes.</CardDescription>{" "}
+                </CardHeader>
+                <CardContent>
+                  <div className="flex flex-col gap-4"></div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader>
+                  <CardTitle>Dialog Settings</CardTitle>
+                  <CardDescription>Change attributes.</CardDescription>{" "}
+                </CardHeader>
+                <CardContent>
+                  <div className="flex flex-col gap-4">
+                    <DialogName />
+                    <DefaultButtonsCheckbox />
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           </div>
         </DndContext>
       </div>
