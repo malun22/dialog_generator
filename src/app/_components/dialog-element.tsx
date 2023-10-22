@@ -1,14 +1,15 @@
 "use client";
 
+import type { BlockType } from "../models/element";
+
 export type DialogElementProps = {
-  x: number;
-  y: number;
+  element: BlockType;
 };
 
-const DialogElement = () => {
+const DialogElement = ({ element }: DialogElementProps) => {
   return (
     <div className="relative flex h-full w-full items-center overflow-visible">
-      <p className="absolute">Text</p>
+      {element.type === "Textbox" && <p className="absolute">{element.type}</p>}
     </div>
   );
 };

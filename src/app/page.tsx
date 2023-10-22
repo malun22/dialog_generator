@@ -16,15 +16,6 @@ import { Separator } from "./_components/ui/separator";
 import DialogName from "./_components/settings/dialog-name";
 
 export default function Home() {
-  function handleDragEnd(event: DragEndEvent) {
-    const { active, over } = event;
-
-    if (!over || !active) {
-      return;
-    }
-
-    console.log(event.over);
-  }
   return (
     <main className="min-h-screen">
       <div className="h-full w-full flex-col md:flex">
@@ -35,10 +26,7 @@ export default function Home() {
           </div>
         </div>
         <Separator className="" />
-        <DndContext
-          onDragEnd={handleDragEnd}
-          collisionDetection={pointerWithin}
-        >
+        <DndContext collisionDetection={pointerWithin}>
           <div className="flex w-full flex-row gap-2 p-2">
             <Card className="container h-full max-w-xs">
               <CardHeader>

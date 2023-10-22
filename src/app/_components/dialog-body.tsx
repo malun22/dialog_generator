@@ -4,18 +4,27 @@ import {
   type UniqueIdentifier,
   useDndMonitor,
   useDroppable,
+  type DragEndEvent,
 } from "@dnd-kit/core";
 import { useDialogState } from "../hooks/dialog-state";
-import DialogElement, { type DialogElementProps } from "./dialog-element";
+import DialogElement from "./dialog-element";
 import { useMemo, useState } from "react";
 import { cn } from "@/utils";
+import {
+  type BlockType,
+  type BlockTypeKeys,
+  BlockTypes,
+} from "../models/element";
 
 const DialogBody = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [isOverId, setIsOverId] = useState<UniqueIdentifier | null>(null);
-  const dialogState = useDialogState((state) => ({ elements: state.elements }));
+  const dialogState = useDialogState((state) => ({
+    elements: state.elements,
+    addElement: state.addElement,
+  }));
 
-  const rowColElements: DialogElementProps[][][] = useMemo(() => {
+  const rowColElements: BlockType[][][] = useMemo(() => {
     // Get the max y and max x
     const maxY = Math.max(...dialogState.elements.map((element) => element.y));
     const maxX = Math.max(
@@ -24,7 +33,7 @@ const DialogBody = () => {
     );
     // Create a 2D array of rows and columns
     const rowColElements = Array.from({ length: maxY + 1 }, () =>
-      Array.from({ length: maxX + 1 }, () => [] as DialogElementProps[]),
+      Array.from({ length: maxX + 1 }, () => [] as BlockType[]),
     );
     // Loop through the elements
     dialogState.elements.forEach((element) => {
@@ -49,15 +58,43 @@ const DialogBody = () => {
       // Tell column, that elemt is above
       setIsOverId(event.over?.id ?? null);
     },
-    onDragEnd() {
+    onDragEnd(event) {
       setIsDragging(false);
       setIsOverId(null);
+      addElement(event);
     },
     onDragCancel() {
       setIsDragging(false);
       setIsOverId(null);
     },
   });
+
+  const addElement = (event: DragEndEvent) => {
+    const id = event.over?.id as string;
+
+    if (!id) {
+      return;
+    }
+
+    // Get the x and y coordinates from the id. The id is in the style of "1x13"
+    const [x, y] = id.split("x").map((coord) => parseInt(coord));
+
+    if (x === undefined || y === undefined) {
+      return;
+    }
+
+    // Check if event.active.id is a BlockTypeKeys
+    if (!Object.keys(BlockTypes).includes(event.active.id as string)) {
+      return;
+    }
+
+    // Create the element
+    dialogState.addElement({
+      x,
+      y,
+      type: event.active.id as BlockTypeKeys,
+    });
+  };
 
   return (
     <div className="flex h-fit w-full flex-col gap-[6px]">
@@ -90,7 +127,7 @@ const DialogBody = () => {
 };
 
 type ColumnProps = {
-  element: DialogElementProps[];
+  element: BlockType[];
   colIndex: number;
   rowIndex: number;
   isOver: boolean;
@@ -111,8 +148,8 @@ const Column = ({ colIndex, element, isOver, id }: ColumnProps) => {
       key={colIndex}
       style={{ width: 6.85 }}
     >
-      {element.map(() => {
-        return <DialogElement key={id} />;
+      {element.map((element) => {
+        return <DialogElement key={id} element={element} />;
       })}
     </div>
   );

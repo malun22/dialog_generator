@@ -3,33 +3,16 @@
 import { useDraggable } from "@dnd-kit/core";
 import { Label } from "./ui/label";
 import { CSS } from "@dnd-kit/utilities";
-
-const ToolTypes = {
-  Textbox: "Textbox",
-  Input: "Input",
-  Image: "Image",
-  Button: "Button",
-  RadioButton: "RadioButton",
-  Checkbox: "Checkbox",
-  DropDownList: "DropDownList",
-  ListBox: "ListBox",
-  ListView: "ListView",
-  TabControl: "TabControl",
-  TabPage: "TabPage",
-  GroupBox: "GroupBox",
-  MenuItem: "MenuItem",
-} as const;
-
-type ToolKeys = (typeof ToolTypes)[keyof typeof ToolTypes];
+import { BlockTypeKeys, BlockTypes, TextBox } from "../models/element";
 
 const Toolbox = () => {
   return (
     <div className="grid grid-cols-2 gap-4">
       {
         // Loop through the ToolKeys
-        Object.keys(ToolTypes).map((key) => {
+        Object.keys(BlockTypes).map((key) => {
           // Get the ToolType
-          const toolType = ToolTypes[key as ToolKeys];
+          const toolType = BlockTypes[key as BlockTypeKeys];
           // Return the Tool
           return <Tool key={key} toolType={toolType} />;
         })
@@ -39,7 +22,7 @@ const Toolbox = () => {
 };
 
 type ToolProps = {
-  toolType: ToolKeys;
+  toolType: BlockTypeKeys;
 };
 
 const Tool = (props: ToolProps) => {

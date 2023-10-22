@@ -1,5 +1,7 @@
+"use client";
+
 import { create } from "zustand";
-import type { DialogElementProps } from "../_components/dialog-element";
+import type { BlockType } from "../models/element";
 
 type DialogState = {
   name: string;
@@ -8,7 +10,9 @@ type DialogState = {
   showDefaultButtons: boolean;
   setShowDefaultButtons: (to: boolean) => void;
   setName: (to: string) => void;
-  elements: DialogElementProps[];
+  elements: BlockType[];
+  addElement: (to: BlockType) => void;
+  removeElement: (to: BlockType) => void;
 };
 
 export const useDialogState = create<DialogState>((set) => ({
@@ -22,14 +26,22 @@ export const useDialogState = create<DialogState>((set) => ({
     {
       x: 20,
       y: 0,
+      type: "Textbox",
     },
     {
       x: 4,
       y: 1,
+      type: "Button",
     },
     {
       x: 4,
       y: 2,
+      type: "Input",
     },
   ],
+  addElement: (to) => set((state) => ({ elements: [...state.elements, to] })),
+  removeElement: (to) =>
+    set((state) => ({
+      elements: state.elements.filter((el) => el !== to),
+    })),
 }));
