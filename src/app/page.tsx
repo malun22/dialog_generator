@@ -14,6 +14,8 @@ import {
 } from "./_components/ui/card";
 import { Separator } from "./_components/ui/separator";
 import DialogName from "./_components/settings/dialog-name";
+import ElementSettings from "./_components/element-settings";
+import { ScrollArea } from "./_components/ui/scroll-area";
 
 export default function Home() {
   return (
@@ -31,7 +33,7 @@ export default function Home() {
             <Card className="container h-full max-w-xs">
               <CardHeader>
                 <CardTitle>Toolbox</CardTitle>
-                <CardDescription>All the available bricks.</CardDescription>
+                <CardDescription>All the available elements.</CardDescription>
               </CardHeader>
               <CardContent>
                 <Toolbox />
@@ -47,19 +49,21 @@ export default function Home() {
               </CardContent>
             </Card>
             <div className="flex h-full w-full max-w-xs flex-col gap-4">
-              <Card className="w-full">
+              <Card id={"element-settings"} className="w-full">
                 <CardHeader>
                   <CardTitle>Block Settings</CardTitle>
                   <CardDescription>Change attributes.</CardDescription>{" "}
                 </CardHeader>
                 <CardContent>
-                  <div className="flex flex-col gap-4"></div>
+                  <ScrollArea className="h-[200px]">
+                    <ElementSettings />
+                  </ScrollArea>
                 </CardContent>
               </Card>
               <Card>
                 <CardHeader>
                   <CardTitle>Dialog Settings</CardTitle>
-                  <CardDescription>Change attributes.</CardDescription>{" "}
+                  <CardDescription>Change attributes.</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="flex flex-col gap-4">

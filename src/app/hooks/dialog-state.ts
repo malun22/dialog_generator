@@ -1,7 +1,7 @@
 "use client";
 
 import { create } from "zustand";
-import type { BlockType } from "../models/element";
+import type { UIElement } from "../models/element";
 
 type DialogState = {
   name: string;
@@ -10,38 +10,42 @@ type DialogState = {
   showDefaultButtons: boolean;
   setShowDefaultButtons: (to: boolean) => void;
   setName: (to: string) => void;
-  elements: BlockType[];
-  addElement: (to: BlockType) => void;
-  removeElement: (to: BlockType) => void;
+  elements: UIElement[];
+  addElement: (to: UIElement) => void;
+  removeElement: (to: UIElement) => void;
+  selectedElement: UIElement | null;
+  setSelectedElement: (to: UIElement | null) => void;
+  updateElement: (to: UIElement) => void;
+  isNameUnique: (name: string, id: string) => boolean;
 };
 
-export const useDialogState = create<DialogState>((set) => ({
+export const useDialogState = create<DialogState>((set, get) => ({
   name: "Dialog",
   width: 39,
   height: 1,
   showDefaultButtons: true,
   setShowDefaultButtons: (to) => set({ showDefaultButtons: to }),
   setName: (to) => set({ name: to }),
-  elements: [
-    {
-      x: 20,
-      y: 0,
-      type: "Textbox",
-    },
-    {
-      x: 4,
-      y: 1,
-      type: "Button",
-    },
-    {
-      x: 4,
-      y: 2,
-      type: "Input",
-    },
-  ],
+  elements: [],
   addElement: (to) => set((state) => ({ elements: [...state.elements, to] })),
   removeElement: (to) =>
     set((state) => ({
-      elements: state.elements.filter((el) => el !== to),
+      elements: state.elements.filter((el) => el.id !== to.id),
     })),
+  selectedElement: null,
+  setSelectedElement: (to) => set({ selectedElement: to }),
+  updateElement: (to) => {
+    set((state) => ({
+      elements: state.elements.map((el) => (el.id === to.id ? to : el)),
+    }));
+  },
+  isNameUnique: (name, id) => {
+    const state = get();
+
+    if (state.elements.find((el) => el.name === name && el.id !== id)) {
+      return false;
+    }
+
+    return true;
+  },
 }));

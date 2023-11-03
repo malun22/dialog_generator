@@ -8,12 +8,14 @@ import {
 } from "@dnd-kit/core";
 import { useDialogState } from "../hooks/dialog-state";
 import DialogElement from "./dialog-element";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { cn } from "@/utils";
 import {
-  type BlockType,
-  type BlockTypeKeys,
   BlockTypes,
+  TextBox,
+  PositionedElement,
+  Input,
+  UIElement,
 } from "../models/element";
 
 const DialogBody = () => {
@@ -22,21 +24,35 @@ const DialogBody = () => {
   const dialogState = useDialogState((state) => ({
     elements: state.elements,
     addElement: state.addElement,
+    setSelectedElement: state.setSelectedElement,
+    updateElement: state.updateElement,
   }));
 
-  const rowColElements: BlockType[][][] = useMemo(() => {
+  const rowColElements: PositionedElement[][][] = useMemo(() => {
+    // Filter out elements, which have no positioning property
+    const filteredElements = dialogState.elements.filter(
+      (element): element is PositionedElement => {
+        return (
+          (element as PositionedElement).x !== undefined &&
+          (element as PositionedElement).y !== undefined
+        );
+      },
+    );
+
     // Get the max y and max x
-    const maxY = Math.max(...dialogState.elements.map((element) => element.y));
+    const maxY = Math.max(
+      Math.max(...filteredElements.map((element) => element.y), 0),
+    );
     const maxX = Math.max(
-      Math.max(...dialogState.elements.map((element) => element.x)),
+      Math.max(...filteredElements.map((element) => element.x)),
       39,
     );
     // Create a 2D array of rows and columns
     const rowColElements = Array.from({ length: maxY + 1 }, () =>
-      Array.from({ length: maxX + 1 }, () => [] as BlockType[]),
+      Array.from({ length: maxX + 1 }, () => [] as PositionedElement[]),
     );
     // Loop through the elements
-    dialogState.elements.forEach((element) => {
+    filteredElements.forEach((element) => {
       // Get the row and column
       const row = rowColElements[element.y];
       if (!row) return;
@@ -53,6 +69,7 @@ const DialogBody = () => {
   useDndMonitor({
     onDragStart() {
       setIsDragging(true);
+      dialogState.setSelectedElement(null);
     },
     onDragOver(event) {
       // Tell column, that elemt is above
@@ -71,8 +88,10 @@ const DialogBody = () => {
 
   const addElement = (event: DragEndEvent) => {
     const id = event.over?.id as string;
+    const active = event.active;
+    const activeId = active.id as string;
 
-    if (!id) {
+    if (!id || !activeId) {
       return;
     }
 
@@ -84,16 +103,33 @@ const DialogBody = () => {
     }
 
     // Check if event.active.id is a BlockTypeKeys
-    if (!Object.keys(BlockTypes).includes(event.active.id as string)) {
-      return;
+    if (!Object.keys(BlockTypes).includes(activeId)) {
+      // Element has been moved
+      const element = active.data.current?.element as PositionedElement;
+      element.x = x;
+      element.y = y;
+      dialogState.updateElement(element);
     }
 
     // Create the element
-    dialogState.addElement({
-      x,
-      y,
-      type: event.active.id as BlockTypeKeys,
-    });
+    let element: UIElement | null;
+    switch (activeId) {
+      case "Textbox":
+        element = new TextBox("", x, y, "Enter text", true);
+        break;
+      case "Input":
+        element = new Input("", x, y, 20, "callback", true, "", false);
+        break;
+      default:
+        element = null;
+        break;
+    }
+
+    if (element === null) {
+      return;
+    }
+    dialogState.addElement(element);
+    dialogState.setSelectedElement(element);
   };
 
   return (
@@ -101,7 +137,7 @@ const DialogBody = () => {
       {rowColElements.map((element, rowIndex) => {
         return (
           <div
-            className={cn("flex h-6 flex-row justify-start gap-0", {
+            className={cn("flex h-6 flex-row justify-start gap-0 text-[9px]", {
               "border border-dashed border-primary bg-[#d6d6d6]": isDragging,
             })}
             key={rowIndex}
@@ -127,7 +163,7 @@ const DialogBody = () => {
 };
 
 type ColumnProps = {
-  element: BlockType[];
+  element: PositionedElement[];
   colIndex: number;
   rowIndex: number;
   isOver: boolean;
@@ -142,7 +178,7 @@ const Column = ({ colIndex, element, isOver, id }: ColumnProps) => {
   return (
     <div
       ref={setNodeRef}
-      className={cn({
+      className={cn("relative h-full", {
         "bg-lime-400": isOver,
       })}
       key={colIndex}

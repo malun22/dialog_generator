@@ -7,7 +7,7 @@ import DialogBody from "./dialog-body";
 const MIN_WIDTH = 39;
 const FACTOR = 6.85;
 
-const applyFactor = (value: number) => {
+export const applyFactor = (value: number) => {
   return value * FACTOR;
 };
 
