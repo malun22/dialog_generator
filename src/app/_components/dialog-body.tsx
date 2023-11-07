@@ -135,7 +135,7 @@ const DialogBody = () => {
 
   return (
     <div className="flex h-fit w-full flex-col gap-[6px]">
-      {rowColElements.map((element, rowIndex) => {
+      {rowColElements.map((row, rowIndex) => {
         return (
           <div
             className={cn("flex h-6 flex-row justify-start gap-0 text-[9px]", {
@@ -143,11 +143,11 @@ const DialogBody = () => {
             })}
             key={rowIndex}
           >
-            {element.map((element, colIndex) => {
+            {row.map((column, colIndex) => {
               const id = `${colIndex}x${rowIndex}`;
               return (
                 <Column
-                  element={element}
+                  elements={column}
                   rowIndex={rowIndex}
                   colIndex={colIndex}
                   id={id}
@@ -159,19 +159,20 @@ const DialogBody = () => {
           </div>
         );
       })}
+      {isDragging && <div className="h-1 w-full bg-[#d6d6d6]"></div>}
     </div>
   );
 };
 
 type ColumnProps = {
-  element: PositionedElement[];
+  elements: PositionedElement[];
   colIndex: number;
   rowIndex: number;
   isOver: boolean;
   id: string;
 };
 
-const Column = ({ colIndex, element, isOver, id }: ColumnProps) => {
+const Column = ({ colIndex, elements, isOver, id }: ColumnProps) => {
   const { setNodeRef } = useDroppable({
     id,
   });
@@ -185,7 +186,7 @@ const Column = ({ colIndex, element, isOver, id }: ColumnProps) => {
       key={colIndex}
       style={{ width: 6.85 }}
     >
-      {element.map((element) => {
+      {elements.map((element) => {
         return <DialogElement key={id} element={element} />;
       })}
     </div>
