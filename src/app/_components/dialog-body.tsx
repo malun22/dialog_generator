@@ -5,6 +5,7 @@ import {
   useDndMonitor,
   useDroppable,
   type DragEndEvent,
+  DndContext,
 } from "@dnd-kit/core";
 import { useDialogState } from "../hooks/dialog-state";
 import DialogElement from "./dialog-element";

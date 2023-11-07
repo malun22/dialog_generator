@@ -1,6 +1,14 @@
 "use client";
 
-import { DndContext, type DragEndEvent, pointerWithin } from "@dnd-kit/core";
+import {
+  DndContext,
+  type DragEndEvent,
+  pointerWithin,
+  useSensor,
+  useSensors,
+  MouseSensor,
+  TouchSensor,
+} from "@dnd-kit/core";
 import DefaultButtonsCheckbox from "./_components/default-buttons-checkbox";
 import Dialog from "./_components/dialog";
 import { ModeToggle } from "./_components/theme-toggle";
@@ -18,6 +26,21 @@ import ElementSettings from "./_components/element-settings";
 import { ScrollArea } from "./_components/ui/scroll-area";
 
 export default function Home() {
+  const touchSensor = useSensor(TouchSensor, {
+    activationConstraint: {
+      delay: 300,
+      tolerance: 5,
+    },
+  });
+
+  const mouseSensor = useSensor(MouseSensor, {
+    activationConstraint: {
+      distance: 10, // 10px
+    },
+  });
+
+  const sensors = useSensors(mouseSensor);
+
   return (
     <main className="min-h-screen">
       <div className="h-full w-full flex-col md:flex">
@@ -28,7 +51,7 @@ export default function Home() {
           </div>
         </div>
         <Separator className="" />
-        <DndContext collisionDetection={pointerWithin}>
+        <DndContext sensors={sensors} collisionDetection={pointerWithin}>
           <div className="flex w-full flex-row gap-2 p-2">
             <Card className="container h-full max-w-xs">
               <CardHeader>

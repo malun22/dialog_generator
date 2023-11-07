@@ -5,8 +5,7 @@ import { cn } from "@/utils";
 import { useDialogState } from "../hooks/dialog-state";
 import { useDraggable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
-import { AiOutlineDrag } from "react-icons/ai";
-import { useState } from "react";
+import { MouseEvent } from "react";
 import { applyFactor } from "./dialog";
 
 export type DialogElementProps = {
@@ -14,14 +13,13 @@ export type DialogElementProps = {
 };
 
 const DialogElement = ({ element }: DialogElementProps) => {
-  const [isHovering, setIsHovering] = useState(false);
-
   const dialogState = useDialogState((state) => ({
     selectedElement: state.selectedElement,
     setSelectedElement: state.setSelectedElement,
   }));
 
-  const onClick = () => {
+  const onClick = (e: MouseEvent) => {
+    e.stopPropagation();
     if (element.id === dialogState.selectedElement?.id) {
       dialogState.setSelectedElement(null);
     } else {
@@ -45,9 +43,11 @@ const DialogElement = ({ element }: DialogElementProps) => {
       className={cn(
         "absolute z-10 flex h-full w-full items-center overflow-visible",
       )}
-      onClick={() => onClick()}
-      onMouseEnter={() => setIsHovering(true)}
-      onMouseLeave={() => setIsHovering(false)}
+      onClick={(e) => onClick(e)}
+      ref={setNodeRef}
+      style={style}
+      {...listeners}
+      {...attributes}
     >
       <div
         className={cn("relative h-full w-fit", {
@@ -59,17 +59,6 @@ const DialogElement = ({ element }: DialogElementProps) => {
           {element instanceof TextBox && <TextBoxUI element={element} />}
           {element instanceof Input && <InputUI element={element} />}
         </div>
-        {isHovering && (
-          <div
-            className="absolute -right-2 -top-1 cursor-move"
-            ref={setNodeRef}
-            style={style}
-            {...listeners}
-            {...attributes}
-          >
-            <AiOutlineDrag />
-          </div>
-        )}
       </div>
     </button>
   );
