@@ -17,12 +17,16 @@ type DialogState = {
   setSelectedElement: (to: UIElement | null) => void;
   updateElement: (to: UIElement) => void;
   isNameUnique: (name: string, id: string) => boolean;
+  setHeight: (to: number) => void;
+  setWidth: (to: number) => void;
 };
 
 export const useDialogState = create<DialogState>((set, get) => ({
   name: "Dialog",
   width: 39,
   height: 1,
+  setHeight: (to) => set({ height: to }),
+  setWidth: (to) => set({ width: to }),
   showDefaultButtons: true,
   setShowDefaultButtons: (to) => set({ showDefaultButtons: to }),
   setName: (to) => set({ name: to }),

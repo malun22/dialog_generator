@@ -72,7 +72,7 @@ export default function Home() {
               </CardContent>
             </Card>
             <div className="flex h-full w-full max-w-xs flex-col gap-4">
-              <Card id={"element-settings"} className="w-full">
+              <Card id={"element-settings"} className="w-full flex-grow">
                 <CardHeader>
                   <CardTitle>Block Settings</CardTitle>
                   <CardDescription>Change attributes.</CardDescription>{" "}

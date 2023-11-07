@@ -9,7 +9,7 @@ import {
 } from "@dnd-kit/core";
 import { useDialogState } from "../hooks/dialog-state";
 import DialogElement from "./dialog-element";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { cn } from "@/utils";
 import {
   BlockTypes,
@@ -27,9 +27,13 @@ const DialogBody = () => {
     addElement: state.addElement,
     setSelectedElement: state.setSelectedElement,
     updateElement: state.updateElement,
+    height: state.height,
+    width: state.width,
   }));
+  const [maxRow, setMaxRow] = useState(0);
+  const [maxCol, setMaxCol] = useState(39);
 
-  const rowColElements: PositionedElement[][][] = useMemo(() => {
+  const positionedElements: PositionedElement[][][] = useMemo(() => {
     // Filter out elements, which have no positioning property
     const filteredElements = dialogState.elements.filter(
       (element): element is PositionedElement => {
@@ -42,12 +46,19 @@ const DialogBody = () => {
 
     // Get the max y and max x
     const maxY = Math.max(
-      Math.max(...filteredElements.map((element) => element.y), 0),
+      Math.max(...filteredElements.map((element) => element.y), maxRow),
     );
     const maxX = Math.max(
       Math.max(...filteredElements.map((element) => element.x)),
-      39,
+      maxCol,
     );
+
+    console.log(maxY, maxX);
+
+    // Set the max row and max col
+    setMaxRow(maxY);
+    setMaxCol(maxX);
+
     // Create a 2D array of rows and columns
     const rowColElements = Array.from({ length: maxY + 1 }, () =>
       Array.from({ length: maxX + 1 }, () => [] as PositionedElement[]),
@@ -135,7 +146,7 @@ const DialogBody = () => {
 
   return (
     <div className="flex h-fit w-full flex-col gap-[6px]">
-      {rowColElements.map((row, rowIndex) => {
+      {Array.from(Array(maxRow + 1), (_, rowIndex) => {
         return (
           <div
             className={cn("flex h-6 flex-row justify-start gap-0 text-[9px]", {
@@ -143,11 +154,11 @@ const DialogBody = () => {
             })}
             key={rowIndex}
           >
-            {row.map((column, colIndex) => {
+            {Array.from(Array(maxCol + 1), (_, colIndex) => {
               const id = `${colIndex}x${rowIndex}`;
               return (
                 <Column
-                  elements={column}
+                  elements={positionedElements[rowIndex]?.[colIndex]}
                   rowIndex={rowIndex}
                   colIndex={colIndex}
                   id={id}
@@ -159,13 +170,22 @@ const DialogBody = () => {
           </div>
         );
       })}
-      {isDragging && <div className="h-1 w-full bg-[#d6d6d6]"></div>}
+      {(true || isDragging) && (
+        <div
+          className="h-1 w-full bg-[#d6d6d6]"
+          id="add-row-indicator"
+          onMouseOver={() => {
+            console.log("enter");
+            setMaxRow(maxRow + 1);
+          }}
+        ></div>
+      )}
     </div>
   );
 };
 
 type ColumnProps = {
-  elements: PositionedElement[];
+  elements: PositionedElement[] | undefined;
   colIndex: number;
   rowIndex: number;
   isOver: boolean;
@@ -186,7 +206,7 @@ const Column = ({ colIndex, elements, isOver, id }: ColumnProps) => {
       key={colIndex}
       style={{ width: 6.85 }}
     >
-      {elements.map((element) => {
+      {elements?.map((element) => {
         return <DialogElement key={id} element={element} />;
       })}
     </div>
